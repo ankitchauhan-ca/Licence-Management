@@ -1,0 +1,16 @@
+{% extends 'licenses/base.html' %}
+
+{% block title %}Create License{% endblock %}
+
+{% block content %}
+<h2>Create License</h2>
+<form method="POST">
+    {% csrf_token %}
+    <label for="email">Email:</label>
+    <input type="email" name="email" required>
+    <label for="expiration_date">Expiration Date:</label>
+    <input type="date" name="expiration_date" required>
+    <button type="submit">Create License</button>
+</form>
+<a href="{% url 'license_list' %}">View Licenses</a>
+{% endblock %}

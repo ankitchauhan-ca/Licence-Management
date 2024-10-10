@@ -1,0 +1,36 @@
+{% extends 'licenses/base.html' %}
+
+{% block title %}License List{% endblock %}
+
+{% block content %}
+<h2>License List</h2>
+<ul>
+    {% for license in licenses %}
+    <li>
+        {{ license.key }} - {{ license.user_email }} - Expiration: {{ license.expiration_date }}
+        {% if license.is_revoked %} (Revoked){% endif %}
+        <button onclick="revokeLicense('{{ license.key }}')">Revoke</button>
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'create_license' %}">Create New License</a>
+
+<script>
+    function revokeLicense(key) {
+        fetch(`/licenses/revoke/${key}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'  // Ensure this is included
+            },
+        }).then(response => response.json())
+            .then(data => {
+                if (data.status === 'revoked') {
+                    location.reload();  // Reload the page to reflect changes
+                } else {
+                    alert(data.error);  // Show an error if revocation fails
+                }
+            });
+    }
+</script>
+{% endblock %}
